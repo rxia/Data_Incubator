@@ -41,10 +41,8 @@ tfidf_vect = TfidfVectorizer(max_df=0.95, min_df=2, stop_words=stopwords_list)
 X_train_tfidf = tfidf_vect.fit_transform(data_allrecipes['instruction']).todense()
 print('Tf-idf feature extraction done ({} sec)'.format(time()-t0))
 
-n_samples, n_features = X_train_counts.shape
-print('n_samples = {}, n_features = {}'.format(n_samples, n_features))
 
-## Fit the NMF model with frequency data
+## Topic model analysis
 n_components = 10
 n_top_words = 30
 
@@ -81,6 +79,13 @@ print_top_words(nmf, tfidf_feature_names, n_top_words)
 # tf_feature_names = count_vect.get_feature_names()
 # print_top_words(lda, tf_feature_names, n_top_words)
 
+# Assign topic index to each observation
+topic = []
+for i in range(tsne_result.shape[0]):
+    topic.append(np.argmax(nmf.transform(X_train_tfidf[i,:])))
+topic = np.array(topic)
+
+
 ## PCA to reduce the number of features
 t0 = time()
 pca = PCA(n_components=100)
@@ -94,11 +99,6 @@ tsne_result = tsne.fit_transform(pca_result)
 print("t_SNE done in %0.3fs." % (time() - t0))
 
 ## Visualize
-topic = []
-for i in range(tsne_result.shape[0]):
-    topic.append(np.argmax(nmf.transform(X_train_tfidf[i,:])))
-topic = np.array(topic)
-##
 plt.figure()
 ax = plt.gca()
 small_sample_index = np.random.choice(tsne_result.shape[0],30000)
@@ -133,7 +133,7 @@ names = np.array(count_vect.get_feature_names())[feature_choice]
 df = pd.DataFrame(data = Corr, columns = names, index = names)
 df.to_csv('to_gephi.csv', sep = ',')
 
-
+# The visualization was then performed in Gephi
 
 
 

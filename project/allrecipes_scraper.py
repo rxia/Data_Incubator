@@ -22,13 +22,8 @@ for ID in np.arange(129001,299999):
         print('at ID {} data length = {}'.format(ID,len(data_allrecipes)))
     if ID%1000==0:
         print('file saved at {}'.format(ID))
-        while True:
-            try:
-                with open('project/data/scraped_data_allrecipes.pickle', 'wb') as f:
-                    pickle.dump(data_allrecipes, f)
-            except:
-                print('file can not be saved at {}'.format(ID))
-                time.sleep(60)
+        with open('project/data/scraped_data_allrecipes.pickle', 'wb') as f:
+            pickle.dump(data_allrecipes, f)
 
 
 ##
